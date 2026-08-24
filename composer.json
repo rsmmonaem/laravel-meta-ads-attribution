@@ -33,21 +33,21 @@
     },
     "autoload": {
         "psr-4": {
-            "Antigravity\\MetaAdsAttribution\\": "src/"
+            "RsmMonaem\\MetaAdsAttribution\\": "src/"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "Antigravity\\MetaAdsAttribution\\Tests\\": "tests/"
+            "RsmMonaem\\MetaAdsAttribution\\Tests\\": "tests/"
         }
     },
     "extra": {
         "laravel": {
             "providers": [
-                "Antigravity\\MetaAdsAttribution\\MetaAdsAttributionServiceProvider"
+                "RsmMonaem\\MetaAdsAttribution\\MetaAdsAttributionServiceProvider"
             ],
             "aliases": {
-                "MetaAttribution": "Antigravity\\MetaAdsAttribution\\Facades\\MetaAttribution"
+                "MetaAttribution": "RsmMonaem\\MetaAdsAttribution\\Facades\\MetaAttribution"
             }
         }
     },

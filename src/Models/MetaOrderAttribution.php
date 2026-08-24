@@ -1,6 +1,6 @@
 <?php
 
-namespace Antigravity\MetaAdsAttribution\Models;
+namespace RsmMonaem\MetaAdsAttribution\Models;
 
 use Illuminate\Database\Eloquent\Model;
 

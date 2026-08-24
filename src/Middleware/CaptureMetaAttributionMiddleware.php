@@ -1,12 +1,12 @@
 <?php
 
-namespace Antigravity\MetaAdsAttribution\Middleware;
+namespace RsmMonaem\MetaAdsAttribution\Middleware;
 
 use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Cookie;
-use Antigravity\MetaAdsAttribution\Services\MetaAttributionManager;
+use RsmMonaem\MetaAdsAttribution\Services\MetaAttributionManager;
 use Symfony\Component\HttpFoundation\Response;
 
 class CaptureMetaAttributionMiddleware

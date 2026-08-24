@@ -1,12 +1,12 @@
 <?php
 
-namespace Antigravity\MetaAdsAttribution;
+namespace RsmMonaem\MetaAdsAttribution;
 
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Blade;
-use Antigravity\MetaAdsAttribution\Services\MetaAttributionManager;
-use Antigravity\MetaAdsAttribution\Services\MetaConversionService;
-use Antigravity\MetaAdsAttribution\Middleware\CaptureMetaAttributionMiddleware;
+use RsmMonaem\MetaAdsAttribution\Services\MetaAttributionManager;
+use RsmMonaem\MetaAdsAttribution\Services\MetaConversionService;
+use RsmMonaem\MetaAdsAttribution\Middleware\CaptureMetaAttributionMiddleware;
 
 class MetaAdsAttributionServiceProvider extends ServiceProvider
 {

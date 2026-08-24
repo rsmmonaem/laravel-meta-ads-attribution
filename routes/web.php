@@ -1,7 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use Antigravity\MetaAdsAttribution\Controllers\MetaAttributionDashboardController;
+use RsmMonaem\MetaAdsAttribution\Controllers\MetaAttributionDashboardController;
 
 Route::group([
     'prefix' => config('meta-attribution.dashboard.prefix', 'admin/meta-attribution'),

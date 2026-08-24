@@ -173,7 +173,7 @@ META_API_VERSION=v19.0
 #### For Laravel 11+ (`bootstrap/app.php`):
 
 ```php
-use Antigravity\MetaAdsAttribution\Middleware\CaptureMetaAttributionMiddleware;
+use RsmMonaem\MetaAdsAttribution\Middleware\CaptureMetaAttributionMiddleware;
 
 return Application::configure(basePath: dirname(__DIR__))
     ->withMiddleware(function (Middleware $middleware): void {
@@ -190,7 +190,7 @@ return Application::configure(basePath: dirname(__DIR__))
 protected $middlewareGroups = [
     'web' => [
         // ...
-        \Antigravity\MetaAdsAttribution\Middleware\CaptureMetaAttributionMiddleware::class,
+        \RsmMonaem\MetaAdsAttribution\Middleware\CaptureMetaAttributionMiddleware::class,
     ],
 ];
 ```
@@ -205,7 +205,7 @@ Open your application's Order Eloquent model (`App\Models\Order` or equivalent):
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use Antigravity\MetaAdsAttribution\Traits\HasMetaAttribution;
+use RsmMonaem\MetaAdsAttribution\Traits\HasMetaAttribution;
 
 class Order extends Model
 {

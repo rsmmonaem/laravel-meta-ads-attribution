@@ -74,7 +74,7 @@ META_ATTRIBUTION_MODEL=first_paid_touch
 In Laravel 11+: Add `CaptureMetaAttributionMiddleware` in `bootstrap/app.php`:
 
 ```php
-use Antigravity\MetaAdsAttribution\Middleware\CaptureMetaAttributionMiddleware;
+use RsmMonaem\MetaAdsAttribution\Middleware\CaptureMetaAttributionMiddleware;
 
 ->withMiddleware(function (Middleware $middleware) {
     $middleware->web(append: [
@@ -93,7 +93,7 @@ Add `HasMetaAttribution` to any Order Eloquent model (`App\Models\Order`, `Lunar
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use Antigravity\MetaAdsAttribution\Traits\HasMetaAttribution;
+use RsmMonaem\MetaAdsAttribution\Traits\HasMetaAttribution;
 
 class Order extends Model
 {

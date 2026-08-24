@@ -1,6 +1,6 @@
 <?php
 
-namespace Antigravity\MetaAdsAttribution\Commands;
+namespace RsmMonaem\MetaAdsAttribution\Commands;
 
 use Illuminate\Console\Command;
 
@@ -16,19 +16,19 @@ class MetaAttributionInstallCommand extends Command
 
         $this->comment('Publishing configuration...');
         $this->call('vendor:publish', [
-            '--provider' => "Antigravity\MetaAdsAttribution\MetaAdsAttributionServiceProvider",
+            '--provider' => "RsmMonaem\MetaAdsAttribution\MetaAdsAttributionServiceProvider",
             '--tag' => "meta-attribution-config",
         ]);
 
         $this->comment('Publishing migrations...');
         $this->call('vendor:publish', [
-            '--provider' => "Antigravity\MetaAdsAttribution\MetaAdsAttributionServiceProvider",
+            '--provider' => "RsmMonaem\MetaAdsAttribution\MetaAdsAttributionServiceProvider",
             '--tag' => "meta-attribution-migrations",
         ]);
 
         $this->comment('Publishing views...');
         $this->call('vendor:publish', [
-            '--provider' => "Antigravity\MetaAdsAttribution\MetaAdsAttributionServiceProvider",
+            '--provider' => "RsmMonaem\MetaAdsAttribution\MetaAdsAttributionServiceProvider",
             '--tag' => "meta-attribution-views",
         ]);
 
@@ -44,7 +44,7 @@ class MetaAttributionInstallCommand extends Command
         $this->line('   META_ACCESS_TOKEN=your_capi_access_token');
         $this->line('');
         $this->line('2. Add the HasMetaAttribution trait to your Order model:');
-        $this->line('   use Antigravity\MetaAdsAttribution\Traits\HasMetaAttribution;');
+        $this->line('   use RsmMonaem\MetaAdsAttribution\Traits\HasMetaAttribution;');
         $this->line('');
         $this->line('3. Add @metaPixel to your main layout head section.');
         $this->line('4. Visit /admin/meta-attribution for your analytics dashboard!');

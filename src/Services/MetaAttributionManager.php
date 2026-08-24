@@ -1,13 +1,13 @@
 <?php
 
-namespace Antigravity\MetaAdsAttribution\Services;
+namespace RsmMonaem\MetaAdsAttribution\Services;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
-use Antigravity\MetaAdsAttribution\Models\MetaAdAttribution;
-use Antigravity\MetaAdsAttribution\Models\MetaTrackingSession;
-use Antigravity\MetaAdsAttribution\Models\MetaOrderAttribution;
+use RsmMonaem\MetaAdsAttribution\Models\MetaAdAttribution;
+use RsmMonaem\MetaAdsAttribution\Models\MetaTrackingSession;
+use RsmMonaem\MetaAdsAttribution\Models\MetaOrderAttribution;
 
 class MetaAttributionManager
 {

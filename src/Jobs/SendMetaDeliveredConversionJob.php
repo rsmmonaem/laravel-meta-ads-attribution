@@ -1,6 +1,6 @@
 <?php
 
-namespace Antigravity\MetaAdsAttribution\Jobs;
+namespace RsmMonaem\MetaAdsAttribution\Jobs;
 
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -8,8 +8,8 @@ use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Log;
-use Antigravity\MetaAdsAttribution\Services\MetaConversionService;
-use Antigravity\MetaAdsAttribution\Models\MetaOrderAttribution;
+use RsmMonaem\MetaAdsAttribution\Services\MetaConversionService;
+use RsmMonaem\MetaAdsAttribution\Models\MetaOrderAttribution;
 
 class SendMetaDeliveredConversionJob implements ShouldQueue
 {

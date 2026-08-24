@@ -1,11 +1,11 @@
 <?php
 
-namespace Antigravity\MetaAdsAttribution\Services;
+namespace RsmMonaem\MetaAdsAttribution\Services;
 
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
-use Antigravity\MetaAdsAttribution\Models\MetaConversionEvent;
-use Antigravity\MetaAdsAttribution\Models\MetaOrderAttribution;
+use RsmMonaem\MetaAdsAttribution\Models\MetaConversionEvent;
+use RsmMonaem\MetaAdsAttribution\Models\MetaOrderAttribution;
 
 class MetaConversionService
 {

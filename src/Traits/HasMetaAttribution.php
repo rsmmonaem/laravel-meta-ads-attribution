@@ -1,10 +1,10 @@
 <?php
 
-namespace Antigravity\MetaAdsAttribution\Traits;
+namespace RsmMonaem\MetaAdsAttribution\Traits;
 
-use Antigravity\MetaAdsAttribution\Models\MetaOrderAttribution;
-use Antigravity\MetaAdsAttribution\Services\MetaAttributionManager;
-use Antigravity\MetaAdsAttribution\Jobs\SendMetaDeliveredConversionJob;
+use RsmMonaem\MetaAdsAttribution\Models\MetaOrderAttribution;
+use RsmMonaem\MetaAdsAttribution\Services\MetaAttributionManager;
+use RsmMonaem\MetaAdsAttribution\Jobs\SendMetaDeliveredConversionJob;
 use Illuminate\Support\Facades\Log;
 
 trait HasMetaAttribution

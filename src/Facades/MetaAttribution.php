@@ -1,9 +1,9 @@
 <?php
 
-namespace Antigravity\MetaAdsAttribution\Facades;
+namespace RsmMonaem\MetaAdsAttribution\Facades;
 
 use Illuminate\Support\Facades\Facade;
-use Antigravity\MetaAdsAttribution\Services\MetaAttributionManager;
+use RsmMonaem\MetaAdsAttribution\Services\MetaAttributionManager;
 
 class MetaAttribution extends Facade
 {
