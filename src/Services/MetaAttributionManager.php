@@ -74,8 +74,10 @@ class MetaAttributionManager
                 'first_touch_at' => $now,
                 'last_touch_at' => $now,
             ]);
-        } else {
-            // Update logic according to First Paid Touch / Hybrid Model
+            // Update logic according to configured Attribution Model
+            $attributionModel = config('meta-attribution.attribution_model', 'first_paid_touch');
+            $hasExistingPaidTouch = !empty($attribution->fbclid) || in_array(strtolower((string) $attribution->utm_source), ['facebook', 'meta', 'instagram', 'ig', 'fb']);
+
             $updateData = [
                 'last_touch_at' => $now,
                 'user_agent' => $userAgent,
@@ -90,8 +92,14 @@ class MetaAttributionManager
                 $updateData['fbp'] = $fbp;
             }
 
-            // If incoming traffic is Meta traffic or contains new click ID, update paid attribution
-            if ($isMetaTraffic || $fbclid) {
+            // Determine if primary attribution fields should be updated:
+            // Under 'first_paid_touch', we only update if the visitor didn't already have a paid touchpoint.
+            // Under 'last_touch', we always update on incoming Meta / paid ad traffic.
+            $shouldUpdatePrimaryAttribution = ($attributionModel === 'first_paid_touch' && !$hasExistingPaidTouch && ($isMetaTraffic || $fbclid))
+                || ($attributionModel === 'last_touch' && ($isMetaTraffic || $fbclid))
+                || ($attributionModel !== 'first_touch' && !$hasExistingPaidTouch && ($isMetaTraffic || $fbclid));
+
+            if ($shouldUpdatePrimaryAttribution) {
                 if ($fbclid) {
                     $updateData['fbclid'] = $fbclid;
                     $updateData['fbc'] = $fbc;

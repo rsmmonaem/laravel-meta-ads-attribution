@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 use RsmMonaem\MetaAdsAttribution\Models\MetaConversionEvent;
 use RsmMonaem\MetaAdsAttribution\Models\MetaOrderAttribution;
+use RsmMonaem\MetaAdsAttribution\Models\MetaAdAttribution;
 
 class MetaConversionService
 {
@@ -34,6 +35,11 @@ class MetaConversionService
         return (bool) config('meta-attribution.enabled', true) && (bool) config('meta-attribution.enable_capi', true);
     }
 
+    public function isConfigured(): bool
+    {
+        return !empty($this->getPixelId()) && !empty($this->getAccessToken());
+    }
+
     /**
      * Send general CAPI Event
      */
@@ -50,6 +56,15 @@ class MetaConversionService
                 'success' => false,
                 'status' => 'disabled',
                 'message' => 'Meta attribution or CAPI is disabled in configuration.',
+            ];
+        }
+
+        if (!$this->isConfigured()) {
+            Log::warning("Meta CAPI event was skipped: Pixel ID or Access Token is missing in configuration.");
+            return [
+                'success' => false,
+                'status' => 'unconfigured',
+                'message' => 'Meta Pixel ID or Access Token is missing in configuration.',
             ];
         }
 
@@ -213,19 +228,60 @@ class MetaConversionService
             ];
         }
 
+        // Resolve Customer Original IP Address & User Agent from Visitor Attribution
+        $visitorAttribution = null;
+        if ($orderAttribution && $orderAttribution->visitor_id) {
+            $visitorAttribution = MetaAdAttribution::where('visitor_id', $orderAttribution->visitor_id)->first();
+        }
+
+        $clientIp = $customerInfo['client_ip_address'] ?? null;
+        if (empty($clientIp) && $visitorAttribution && !empty($visitorAttribution->ip_address)) {
+            $clientIp = $visitorAttribution->ip_address;
+        }
+        if (empty($clientIp) && is_object($order) && !empty($order->ip_address)) {
+            $clientIp = $order->ip_address;
+        }
+        if (empty($clientIp) && !app()->runningInConsole()) {
+            $clientIp = request()->ip();
+        }
+
+        $clientUserAgent = $customerInfo['client_user_agent'] ?? null;
+        if (empty($clientUserAgent) && $visitorAttribution && !empty($visitorAttribution->user_agent)) {
+            $clientUserAgent = $visitorAttribution->user_agent;
+        }
+        if (empty($clientUserAgent) && is_object($order) && !empty($order->user_agent)) {
+            $clientUserAgent = $order->user_agent;
+        }
+        if (empty($clientUserAgent) && !app()->runningInConsole()) {
+            $clientUserAgent = (string) request()->userAgent();
+        }
+
+        // Resolve Customer Name (support customer_name / name splitting into first_name and last_name)
+        $firstName = $customerInfo['first_name'] ?? (is_object($order) ? ($order->first_name ?? null) : null);
+        $lastName = $customerInfo['last_name'] ?? (is_object($order) ? ($order->last_name ?? null) : null);
+
+        if (empty($firstName) && empty($lastName)) {
+            $rawFullName = trim($customerInfo['name'] ?? (is_object($order) ? ($order->customer_name ?? $order->name ?? '') : ''));
+            if ($rawFullName) {
+                $nameParts = preg_split('/\s+/', $rawFullName, 2);
+                $firstName = $nameParts[0] ?? null;
+                $lastName = $nameParts[1] ?? null;
+            }
+        }
+
         // Gather Customer Matching data
         $userData = [
             'email' => $customerInfo['email'] ?? (is_object($order) ? ($order->email ?? $order->customer_email ?? null) : null),
             'phone' => $customerInfo['phone'] ?? (is_object($order) ? ($order->phone ?? $order->customer_phone ?? null) : null),
-            'first_name' => $customerInfo['first_name'] ?? (is_object($order) ? ($order->first_name ?? null) : null),
-            'last_name' => $customerInfo['last_name'] ?? (is_object($order) ? ($order->last_name ?? null) : null),
+            'first_name' => $firstName,
+            'last_name' => $lastName,
             'city' => $customerInfo['city'] ?? (is_object($order) ? ($order->city ?? null) : null),
             'state' => $customerInfo['state'] ?? (is_object($order) ? ($order->state ?? null) : null),
             'postal_code' => $customerInfo['postal_code'] ?? (is_object($order) ? ($order->postal_code ?? $order->zip ?? null) : null),
             'country' => $customerInfo['country'] ?? (is_object($order) ? ($order->country ?? null) : null),
             'external_id' => (string) (is_object($order) ? ($order->user_id ?? $order->customer_id ?? $orderId) : $orderId),
-            'client_ip_address' => request()->ip(),
-            'client_user_agent' => (string) request()->userAgent(),
+            'client_ip_address' => $clientIp,
+            'client_user_agent' => $clientUserAgent,
             'fbp' => $orderAttribution ? $orderAttribution->fbp : request()->cookie('_fbp'),
             'fbc' => $orderAttribution ? $orderAttribution->fbc : request()->cookie('_fbc'),
         ];

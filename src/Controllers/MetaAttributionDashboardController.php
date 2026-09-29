@@ -46,7 +46,7 @@ class MetaAttributionDashboardController extends Controller
 
         // Campaign breakdown
         $campaigns = MetaOrderAttribution::select(
-                DB::raw('COALESCE(utm_campaign, campaign, "Unassigned") as campaign_name'),
+                DB::raw("COALESCE(utm_campaign, campaign, 'Unassigned') as campaign_name"),
                 DB::raw('COUNT(DISTINCT order_id) as total_orders'),
                 DB::raw('SUM(order_amount) as total_revenue')
             )

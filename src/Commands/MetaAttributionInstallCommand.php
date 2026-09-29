@@ -12,7 +12,7 @@ class MetaAttributionInstallCommand extends Command
 
     public function handle()
     {
-        $this->info('🚀 Installing Meta Ads Attribution & Delivered Conversions Package...');
+        $this->info('Installing Meta Ads Attribution & Delivered Conversions Package...');
 
         $this->comment('Publishing configuration...');
         $this->call('vendor:publish', [
@@ -36,7 +36,7 @@ class MetaAttributionInstallCommand extends Command
             $this->call('migrate');
         }
 
-        $this->info('✅ Meta Ads Attribution package installed successfully!');
+        $this->info('Meta Ads Attribution package installed successfully!');
         $this->line('');
         $this->info('Next steps:');
         $this->line('1. Set your Meta credentials in .env:');

@@ -36,12 +36,29 @@ class CaptureMetaAttributionMiddleware
 
         $response = $next($request);
 
-        // Attach first-party cookie if new or refreshing lifetime (90 days)
-        $cookieLifetime = config('meta-attribution.cookie_lifetime', 60 * 24 * 90); // minutes
+        // Attach first-party cookies (90-day retention, Safari ITP resilience)
+        $cookieLifetime = (int) config('meta-attribution.cookie_lifetime', 60 * 24 * 90); // minutes
+        $isSecure = $request->isSecure();
+
         if ($response instanceof Response) {
+            // 1. Primary Visitor Identifier
             $response->headers->setCookie(
-                Cookie::make($cookieName, $visitorId, $cookieLifetime, '/', null, false, false)
+                Cookie::make($cookieName, $visitorId, $cookieLifetime, '/', null, $isSecure, false, false, 'Lax')
             );
+
+            // 2. Server-side Meta Browser Cookie (_fbp)
+            if (!$request->hasCookie('_fbp') && !empty($attribution->fbp)) {
+                $response->headers->setCookie(
+                    Cookie::make('_fbp', $attribution->fbp, $cookieLifetime, '/', null, $isSecure, false, false, 'Lax')
+                );
+            }
+
+            // 3. Server-side Meta Click Identifier Cookie (_fbc)
+            if (!$request->hasCookie('_fbc') && !empty($attribution->fbc)) {
+                $response->headers->setCookie(
+                    Cookie::make('_fbc', $attribution->fbc, $cookieLifetime, '/', null, $isSecure, false, false, 'Lax')
+                );
+            }
         }
 
         return $response;
