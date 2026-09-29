@@ -10,7 +10,7 @@ return new class extends Migration
     {
         Schema::create('meta_order_attributions', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('order_id')->unique()->index();
+            $table->string('order_id', 64)->unique()->index();
             $table->string('order_number')->nullable()->index();
             $table->string('visitor_id')->nullable()->index();
             $table->unsignedBigInteger('user_id')->nullable()->index();

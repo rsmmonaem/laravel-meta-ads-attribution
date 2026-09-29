@@ -10,7 +10,7 @@ return new class extends Migration
     {
         Schema::create('meta_conversion_events', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('order_id')->nullable()->index();
+            $table->string('order_id', 64)->nullable()->index();
             $table->string('event_id')->unique()->index(); // e.g. purchase_10025
             $table->string('event_name')->default('Purchase')->index();
             $table->string('action_source')->default('website');

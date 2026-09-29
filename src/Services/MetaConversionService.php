@@ -49,7 +49,7 @@ class MetaConversionService
         array $customData = [],
         ?string $eventId = null,
         ?string $eventSourceUrl = null,
-        ?int $orderId = null
+        int|string|null $orderId = null
     ): array {
         if (!$this->isEnabled()) {
             return [

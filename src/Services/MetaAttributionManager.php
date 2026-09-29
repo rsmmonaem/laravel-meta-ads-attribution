@@ -30,16 +30,21 @@ class MetaAttributionManager
         $adId = $request->query('ad_id');
 
         // 2. Resolve Meta Cookies (_fbp, _fbc)
-        $fbp = $request->cookie('_fbp') ?? Session::get('meta_fbp');
+        $hasSession = $request->hasSession();
+        $fbp = $request->cookie('_fbp') ?? ($hasSession ? Session::get('meta_fbp') : null);
         if (!$fbp) {
             $fbp = 'fb.1.' . time() . '.' . rand(100000000, 999999999);
-            Session::put('meta_fbp', $fbp);
+            if ($hasSession) {
+                Session::put('meta_fbp', $fbp);
+            }
         }
 
-        $fbc = $request->cookie('_fbc') ?? Session::get('meta_fbc');
+        $fbc = $request->cookie('_fbc') ?? ($hasSession ? Session::get('meta_fbc') : null);
         if ($fbclid && !$fbc) {
             $fbc = 'fb.1.' . time() . '.' . $fbclid;
-            Session::put('meta_fbc', $fbc);
+            if ($hasSession) {
+                Session::put('meta_fbc', $fbc);
+            }
         }
 
         $landingPage = $request->fullUrl();
@@ -74,6 +79,7 @@ class MetaAttributionManager
                 'first_touch_at' => $now,
                 'last_touch_at' => $now,
             ]);
+        } else {
             // Update logic according to configured Attribution Model
             $attributionModel = config('meta-attribution.attribution_model', 'first_paid_touch');
             $hasExistingPaidTouch = !empty($attribution->fbclid) || in_array(strtolower((string) $attribution->utm_source), ['facebook', 'meta', 'instagram', 'ig', 'fb']);
@@ -119,7 +125,7 @@ class MetaAttributionManager
 
         // 4. Log Session Touchpoint
         $sessionKey = config('meta-attribution.session_key', 'meta_attribution_session');
-        $sessionId = Session::getId();
+        $sessionId = $hasSession ? Session::getId() : (string) \Illuminate\Support\Str::uuid();
 
         MetaTrackingSession::create([
             'session_id' => $sessionId,
@@ -138,23 +144,26 @@ class MetaAttributionManager
         ]);
 
         // Store active visitor ID in session for easy lookup during order placement
-        Session::put($sessionKey, [
-            'visitor_id' => $visitorId,
-            'fbclid' => $attribution->fbclid,
-            'fbc' => $attribution->fbc,
-            'fbp' => $attribution->fbp,
-            'utm_source' => $attribution->utm_source,
-            'utm_medium' => $attribution->utm_medium,
-            'utm_campaign' => $attribution->utm_campaign,
-        ]);
+        if ($hasSession) {
+            Session::put($sessionKey, [
+                'visitor_id' => $visitorId,
+                'fbclid' => $attribution->fbclid,
+                'fbc' => $attribution->fbc,
+                'fbp' => $attribution->fbp,
+                'utm_source' => $attribution->utm_source,
+                'utm_medium' => $attribution->utm_medium,
+                'utm_campaign' => $attribution->utm_campaign,
+            ]);
+        }
 
         return $attribution;
     }
 
-    public function attachAttributionToOrder(int $orderId, ?string $orderNumber, float $amount, string $currency = 'USD', ?int $userId = null): MetaOrderAttribution
+    public function attachAttributionToOrder(int|string $orderId, ?string $orderNumber, float $amount, string $currency = 'USD', int|string|null $userId = null): MetaOrderAttribution
     {
         $cookieName = config('meta-attribution.cookie_name', 'meta_visitor_id');
-        $visitorId = request()->cookie($cookieName) ?? Session::get('meta_attribution_session.visitor_id');
+        $hasSession = request()->hasSession();
+        $visitorId = request()->cookie($cookieName) ?? ($hasSession ? Session::get('meta_attribution_session.visitor_id') : null);
 
         $attribution = null;
         if ($visitorId) {
